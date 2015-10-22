@@ -1,0 +1,93 @@
+<?php
+// If you want to set an alternative to Trafalgar Square as the home location, you can do so in the following lines. $homeeast and $homenorth are for the National Grid eastings and northings for your new home location, used for the distance and direction; $homelong and $homelat are its longitude and latitude, used for the satellite image and the AA routeplanner link. 
+
+$home = "Trafalgar Square";
+$homeeast = 530019;
+$homenorth = 180417;
+$homelong = -0.127817;
+$homelat = 51.507575;
+
+// This section GETs the variables from the URL.
+
+$search=$_GET["search"];
+$x=$_GET["x"];
+$y=$_GET["y"];
+$latitude=$_GET["lat"];
+$longitude=$_GET["long"];
+$natgrid=$_GET["natgrid"];
+$place=$_GET["place"];
+$county=$_GET["county"];
+$ctype=$_GET["ctype"];
+$borough=$_GET["borough"];
+$btype=$_GET["btype"];
+$region=$_GET["region"];
+$distance=$_GET["distance"];
+
+// This uses MySociety's MapIT to obtain the Westminster constituency of the postcode in question. If you don't want the constituency, you can delete this for better performance.
+
+$searchnospace = preg_replace('/\s+/', '', $search);
+$url = "http://mapit.mysociety.org/postcode/".$searchnospace;
+$page = htmlspecialchars(file_get_contents("$url"));
+$c = stripos ( $page , "UK Parliament constituency" ) -200;
+$craw = substr ( $page , $c, 127 );
+$craws = strrpos ($craw , '&quot') +6;
+$constituency = substr( $craw , $craws);
+
+// This prints the area names and other data on the postcode.
+
+echo "<h1>",$search," is in ",$place,"</h1>";
+echo "<br>County or unitary: ",$county," ",$ctype,"<br>";
+echo "District or borough: ",$borough," ",$btype,"<br>";
+echo "Region/nation: ",$region,"<br>";
+echo "Westminster constituency: ",$constituency,"<br>";
+echo "<br>National Grid reference: ",$natgrid,"<br>";
+echo "National Grid numerical easting: ",$x,"<br>";
+echo "National Grid numerical northing: ",$y,"<br>";
+echo "Latitude: ",$latitude,"<br>";
+echo "Longitude: ",$longitude,"<br>";
+echo "<br>Distance from ",$home," to ",$search,": ",round(($distance/1.60934),1,PHP_ROUND_HALF_UP)," miles (",round($distance,1,PHP_ROUND_HALF_UP),"km)<br>";
+
+// This section calculates the bearing from the home location to the postcode in question. The default home location is Trafalgar Square. To alter this, change the six-figure numbers in the first two lines to the numeric National Grid references of your choice. 
+
+$eastdiff = $homeeast - $x;
+$northdiff = $homenorth - $y;
+$diffsq = $eastdiff * $eastdiff;
+$diffsq += $northdiff * $northdiff;
+$diff = (sqrt($diffsq) / 1000);
+$eastdiff += 0.000001;
+$hordiff = $northdiff / $eastdiff;
+$horang1 = atan($hordiff);
+$horang2 = $horang1 * 180;
+$horang3 = $horang2 / pi();
+if ($eastdiff>0) {$horadj = 180;} else {$horadj = 0;};
+$horang = 90 - $horang3 + $horadj;
+echo "Direction from ",$home," to ",$search,": ",round($horang,0,PHP_ROUND_HALF_UP)," degrees (relative to National Grid North)<br>";
+
+// This section uses PHP's SUNFUNCS to work out today's sunrise and sunset time for the location.
+
+echo "Sunrise time: ",(date_sunrise(time(),SUNFUNCS_RET_STRING,$latitude,$longitude,90,0))," GMT<br>";
+echo "Sunset time: ",(date_sunset(time(),SUNFUNCS_RET_STRING,$latitude,$longitude,90,0))," GMT<br>";
+
+// This section creates various URLs that link to external websites. The first one, for BBC Weather, uses the first half of the postcode only. AA Routeplanner uses $home, $homelat and $homelong.
+
+$searchspace = strpos ($search, " ");
+$shortpostcode = strtolower (substr ($search, 0, $searchspace));
+echo('<br><a href="http://www.bbc.co.uk/weather/'.$shortpostcode.'" target="_blank">BBC Weather for '.$search.'</a><br>');
+echo('<a href="http://www.theaa.com/route-planner/index.jsp#fromNode=0|'.$home.'||'.$homelong.'|'.$homelat.'|toNode=0|'.$place.'||'.$longitude.'|'.$latitude.'" target="_blank">AA Route to '.$search.' from '.$home.'</a><br>');
+echo('<a href="http://streetmap.co.uk/postcode/'.$search.'" target="_blank">Streetmap of '.$search.'</a><br>');
+echo('<a href="http://en.parkopedia.co.uk/parking/'.$search.'" target="_blank">Parkopedia parking near '.$search.'</a><br>');
+echo('<a href="http://www.zoopla.co.uk/for-sale/property/'.$search.'" target="_blank">Zoopla properties near '.$search.'</a><br>');
+echo('<a href="http://www.checkmyfile.com/postcode-check/'.$search.'.htm" target="_blank">Checkmyfile financial profile for '.$search.'</a><br>');
+echo('<a href="http://mapit.mysociety.org/postcode/'.$search.'.html" target="_blank">MySociety MapIT data for '.$search.'</a><br>');
+echo('<a href="http://www.nationaltrust.org.uk/visit/places/find-a-place-to-visit/?findPlace='.$search.'" target="_blank">National Trust properties near '.$search.'</a><br>');
+
+// This produces a satellite image from Google Maps centred on the location, based on longitude and latitude.
+
+echo('<br><iframe src="https://www.google.com/maps/embed?pb=!1m13!1m11!1m3!1d21761.167025518716!2d'.$longitude.'!3d'.$latitude.'!2m2!1f0!2f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2suk!4v1444421015611" width="600" height="600" frameborder="1" style="border:1" allowfullscreen></iframe><br>');
+
+echo('<br><h2><a href="http://samathieson.com/sa-mathieson/data/postcode-decode/">Decode another postcode</a></h2><br>');
+
+// This section provides sources for data.
+
+echo '<i>Data shown is provided by the <a href="https://www.ordnancesurvey.co.uk/business-and-government/products/os-openspace/api/index.html" target="_blank">Ordnance Survey OpenSpace API</a> except for constituency (<a href="http://mapit.mysociety.org/" target="_blank">MySociety MapIt</a>); National Grid reference, longitude, latitude and distance from '.$home.' (calculated by PHPcoord copyright 2005 Jonathan Stott and used under a GNU Licence); direction from '.$home.' (calculated from National Grid co-ordinates); and sunset and sunrise (calculated using the PHP SUNFUNCS function).<br><br>Statement of the obvious: do not rely on the accuracy of this service for anything critical. No warranty is provided. The code for these pages is copyright SA Mathieson 2015 except for the sections which are copyright Jonathan Stott 2005, available under a GNU General Public Licence via GitHub.</i><br><br><b>Any problems with Postcode-decode? <a href="http://samathieson.com/sa-mathieson/contact/">Please let me know.</a></b><br><br>';
+?>
