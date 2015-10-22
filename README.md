@@ -7,4 +7,4 @@ You can see Postcode-decode working at http://samathieson.com/postcode-decode/ (
 
 To make this work however you install it, you need to obtain an Ordnance Survey OpenSpace API key and replace YOURKEYHERE with your key in all three files. You also need to replace YOURURLHERE with your URL in both the PHP files.
 
-If you want to choose a different home location, you need to alter variables at the start of both of the PHP files. The default is Trafalgar Square in London. You need to change $home (name of home); $homeeast and $homenorth (National Grid co-ordinates of home location); and $homelong and $homelat (longitude and latitude of home location). 
+The default home location is Trafalgar Square in London. If you want to choose a different home location, you need to alter variables at the start of both of the PHP files: $home (name of home); $homeeast and $homenorth (National Grid co-ordinates of home location); and $homelong and $homelat (longitude and latitude of home location).
