@@ -85,7 +85,7 @@ echo('<a href="http://www.nationaltrust.org.uk/visit/places/find-a-place-to-visi
 
 echo('<br><iframe src="https://www.google.com/maps/embed?pb=!1m13!1m11!1m3!1d21761.167025518716!2d'.$longitude.'!3d'.$latitude.'!2m2!1f0!2f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2suk!4v1444421015611" width="600" height="600" frameborder="1" style="border:1" allowfullscreen></iframe><br>');
 
-echo('<br><h2><a href="http://samathieson.com/sa-mathieson/data/postcode-decode/">Decode another postcode</a></h2><br>');
+echo('<br><h2><a href="http://YOURURLHERE/postcode-decode/">Decode another postcode</a></h2><br>');
 
 // This section provides sources for data.
 
