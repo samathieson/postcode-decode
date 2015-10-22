@@ -894,9 +894,9 @@ $longitude = round((substr ($ll1->toString(),$comma+2,-1)), 6, PHP_ROUND_HALF_UP
  $lld2 = new LatLng($latitude, $longitude);  
  $d = round(($lld1->distance($lld2)), 1);
 
-// This sets up the URL containing the data for use on the next page, then automatically redirects to this with a back-up clickable link.
+// This sets up the URL containing the data for use on the next page, then automatically redirects to this with a back-up clickable link. You need to change YOURURLHERE to the URL of your website.
         
-$redirect = 'http://samathieson.com/sa-mathieson/data/postcode-decode/postcode-decoded/?search='.$name.'&x='.$geometry_x.'&y='.$geometry_y.'&natgrid='.$natgrid.'&long='.$longitude.'&lat='.$latitude.'&place='.$populated_place.'&county='.$county.'&ctype='.$ctype.'&borough='.$borough.'&btype='.$btype.'&region='.$region.'&distance='.$d;
+$redirect = 'http://YOURURLHERE/postcode-decode/postcode-decoded/?search='.$name.'&x='.$geometry_x.'&y='.$geometry_y.'&natgrid='.$natgrid.'&long='.$longitude.'&lat='.$latitude.'&place='.$populated_place.'&county='.$county.'&ctype='.$ctype.'&borough='.$borough.'&btype='.$btype.'&region='.$region.'&distance='.$d;
 
 echo '<a href="'.$redirect.'">Redirecting. Click here if redirection does not take place in a few seconds.</a>';
 
