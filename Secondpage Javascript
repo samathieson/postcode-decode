@@ -1,0 +1,62 @@
+<script type="text/javascript">
+   function getUrlVars() {
+var vars = {};
+var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+vars[key] = value;
+});
+return vars;
+}
+
+var x = getUrlVars()["x"];
+var y = getUrlVars()["y"];
+var raw = getUrlVars()["place"];
+var place = raw.replace(/%20/g, " "); 
+</script>
+
+<script type="text/javascript" src="http://openspace.ordnancesurvey.co.uk/osmapapi/openspace.js?key=YOURKEYHERE"></script>  
+
+<style>
+  html, body {height: 100%;}
+  #map {width: 600px; height: 600px; border:1px solid black;}
+</style>
+  
+<body onload="init()">
+  
+
+<!-- The div below holds the map -->
+  
+<div id="map"></div>
+  
+<script>
+// Define the osMap variable
+
+var osMap;
+
+// This function creates the map and is called by the div in the HTML
+
+function init()
+
+  {
+    
+// Create new map
+    
+    osMap = new OpenSpace.Map('map');
+    
+// Set map centre in National Grid Eastings and Northings and select zoom level 5
+
+    osMap.setCenter(new OpenSpace.MapPoint(x, y), 5);
+            
+// Create position variable to position Infowindow
+    
+    var pos = new OpenSpace.MapPoint(x, y);
+    
+// Add content for Infowindow
+    
+    var content = place;
+    
+// Add Infowindow    
+    
+    var marker = osMap.createMarker(pos, null, content);
+  
+  }
+</script>
